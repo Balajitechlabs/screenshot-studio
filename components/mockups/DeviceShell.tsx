@@ -49,6 +49,7 @@ function Screen({
   editing,
   className,
   style,
+  imageStyle,
   emptyStatePosition,
   emptyStateWidth,
   emptyStateTransform,
@@ -65,6 +66,7 @@ function Screen({
   editing: boolean;
   className?: string;
   style?: CSSProperties;
+  imageStyle?: CSSProperties;
   emptyStatePosition?: { x: number; y: number };
   emptyStateWidth?: number;
   emptyStateTransform?: string;
@@ -149,6 +151,7 @@ function Screen({
           draggable={false}
           className="block h-full w-full select-none"
           style={{
+            ...imageStyle,
             objectFit: screen.fit,
             transform: `translate(${screen.offset.x}%, ${screen.offset.y}%) scale(${screen.scale})`,
             transformOrigin: "center",
@@ -246,9 +249,24 @@ export function DeviceShell({
         : { x: 0, y: 0 };
     const screenWidth = asset.screen.width + screenBleed.x * 2;
     const screenHeight = asset.screen.height + screenBleed.y * 2;
+    const contentBounds = {
+      x: asset.screen.x - screenBleed.x,
+      y: asset.screen.y - screenBleed.y,
+      width: screenWidth,
+      height: screenHeight,
+    };
+    const bounds = asset.maskScreen ?? contentBounds;
+    const maskBounds = asset.maskScreen ?? asset.screen;
+    const imageStyle: CSSProperties | undefined = asset.maskScreen ? {
+      position: "absolute",
+      left: `${((contentBounds.x - bounds.x) / bounds.width) * 100}%`,
+      top: `${((contentBounds.y - bounds.y) / bounds.height) * 100}%`,
+      width: `${(contentBounds.width / bounds.width) * 100}%`,
+      height: `${(contentBounds.height / bounds.height) * 100}%`,
+    } : undefined;
     // Keep the phone mask aligned with the frame, even when the image bleeds past it.
     const maskSize = definition.family === "phone" && definition.perspective === "front"
-      ? `${(asset.screen.width / screenWidth) * 100}% ${(asset.screen.height / screenHeight) * 100}%`
+      ? `${(maskBounds.width / bounds.width) * 100}% ${(maskBounds.height / bounds.height) * 100}%`
       : "100% 100%";
     const screenMask = {
       WebkitMaskImage: `url(${asset.maskSrc})`,
@@ -267,11 +285,12 @@ export function DeviceShell({
           emptyStatePosition={asset.emptyStatePosition}
           emptyStateWidth={asset.emptyStateWidth}
           emptyStateTransform={asset.emptyStateTransform}
+          imageStyle={imageStyle}
           style={{
-            left: `${(asset.screen.x - screenBleed.x) * 100}%`,
-            top: `${(asset.screen.y - screenBleed.y) * 100}%`,
-            width: `${screenWidth * 100}%`,
-            height: `${screenHeight * 100}%`,
+            left: `${bounds.x * 100}%`,
+            top: `${bounds.y * 100}%`,
+            width: `${bounds.width * 100}%`,
+            height: `${bounds.height * 100}%`,
             ...screenMask,
           }}
         />

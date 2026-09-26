@@ -9,16 +9,17 @@ for (const definitionId of ["iphone-17-pro-front", "iphone-17-front"]) {
     const definition = getMockupDefinition(definitionId);
     assert.ok(definition?.asset);
     const asset = definition.asset;
+    const bounds = asset.maskScreen ?? asset.screen;
     const framePath = new URL(`../public${asset.src}`, import.meta.url);
     const maskPath = new URL(`../public${asset.maskSrc}`, import.meta.url);
     const { data: frame, info: frameInfo } = await sharp(await readFile(framePath))
       .ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     const { data: mask, info: maskInfo } = await sharp(await readFile(maskPath))
       .ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    const left = Math.round(asset.screen.x * frameInfo.width);
-    const top = Math.round(asset.screen.y * frameInfo.height);
-    assert.equal(Math.round(asset.screen.width * frameInfo.width), maskInfo.width);
-    assert.equal(Math.round(asset.screen.height * frameInfo.height), maskInfo.height);
+    const left = Math.round(bounds.x * frameInfo.width);
+    const top = Math.round(bounds.y * frameInfo.height);
+    assert.equal(Math.round(bounds.width * frameInfo.width), maskInfo.width);
+    assert.equal(Math.round(bounds.height * frameInfo.height), maskInfo.height);
 
     let colorSpill = 0;
     for (let y = 0; y < maskInfo.height; y += 1) {
