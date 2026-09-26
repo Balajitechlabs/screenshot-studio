@@ -17,7 +17,8 @@ export const MOCKUP_DEFINITIONS: MockupDefinition[] = [
     asset: {
       src: "/device-mockups/iphone-17-pro-front.png",
       maskSrc: "/device-mockups/iphone-17-pro-front-screen-mask.png",
-      screen: { x: 0.043037, y: 0.017606, width: 0.913926, height: 0.964789 },
+      // The repaired mask includes six pixels of overlap beneath the frame.
+      screen: { x: 44 / 1165, y: 36 / 2400, width: 1077 / 1165, height: 2327 / 2400 },
     },
   },
   {
@@ -30,7 +31,7 @@ export const MOCKUP_DEFINITIONS: MockupDefinition[] = [
     asset: {
       src: "/device-mockups/iphone-17-front.png",
       maskSrc: "/device-mockups/iphone-17-front-screen-mask.png",
-      screen: { x: 0.038931, y: 0.016248, width: 0.920611, height: 0.967873 },
+      screen: { x: 39 / 1161, y: 33 / 2400, width: 1081 / 1161, height: 2335 / 2400 },
     },
   },
   {
