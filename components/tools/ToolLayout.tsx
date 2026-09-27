@@ -9,15 +9,19 @@ import { TOOLS_HUB_PATH } from "@/lib/seo/tools";
 import { cn } from "@/lib/utils";
 import { CARD_CLASS, INTER } from "./ui";
 
-/** Centered breadcrumb, H1, and intro shared by every image tool page. */
+/** Centered breadcrumb, H1, and intro shared by the tool, compare, and guide pages. */
 export function ToolHero({
   name,
   title,
   intro,
+  parent = { href: TOOLS_HUB_PATH, label: "Image tools" },
+  children,
 }: {
   name: string;
   title: string;
   intro: string;
+  parent?: { href: string; label: string } | null;
+  children?: React.ReactNode;
 }) {
   return (
     <header className="mx-auto max-w-3xl text-center">
@@ -28,15 +32,19 @@ export function ToolHero({
               Home
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link
-              href={TOOLS_HUB_PATH}
-              className="transition-colors hover:text-foreground"
-            >
-              Image tools
-            </Link>
-          </li>
+          {parent ? (
+            <>
+              <li aria-hidden="true">/</li>
+              <li>
+                <Link
+                  href={parent.href}
+                  className="transition-colors hover:text-foreground"
+                >
+                  {parent.label}
+                </Link>
+              </li>
+            </>
+          ) : null}
           <li aria-hidden="true">/</li>
           <li aria-current="page" className="text-foreground">
             {name}
@@ -52,6 +60,7 @@ export function ToolHero({
       <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
         {intro}
       </p>
+      {children}
     </header>
   );
 }

@@ -28,7 +28,10 @@ const comparisonRows = comparisons
   .join("\n");
 
 const guideRows = guides
-  .map((guide) => `| ${guide.title} | ${BASE_URL}/guides/${guide.slug} | Dated roundup with prices and limits |`)
+  .map(
+    (guide) =>
+      `| ${guide.title} | ${BASE_URL}/guides/${guide.slug} | ${guide.kind === "roundup" ? "Dated roundup with prices and limits" : "Step-by-step how-to"} |`,
+  )
   .join("\n");
 
 export const llmsTxt = `# Screenshot Studio
@@ -300,7 +303,7 @@ ${comparisonRows}
 ### Guides
 | Page | URL | Description |
 |------|-----|-------------|
-| Guides Hub | ${BASE_URL}/guides | Index of tool roundups |
+| Guides Hub | ${BASE_URL}/guides | Index of how-to guides and tool roundups |
 ${guideRows}
 
 ### Company

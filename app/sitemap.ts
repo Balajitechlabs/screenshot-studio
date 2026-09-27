@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { LAST_UPDATED_ISO } from "@/lib/seo/changelog";
 import { CLAIMS_CHECKED, getAllComparisonSlugs } from "@/lib/seo/comparisons";
-import { GUIDES_UPDATED, guides } from "@/lib/seo/guides";
+import { getGuide, guideUpdated, guides } from "@/lib/seo/guides";
 import { TOOLS, TOOLS_HUB_PATH } from "@/lib/seo/tools";
 
 const STATIC_PATHS = [
@@ -44,7 +44,10 @@ const STATIC_PATHS = [
 ];
 
 function lastModifiedFor(path: string): string {
-  if (path.startsWith("/guides/")) return GUIDES_UPDATED;
+  const guide = path.startsWith("/guides/")
+    ? getGuide(path.slice("/guides/".length))
+    : undefined;
+  if (guide) return guideUpdated(guide);
   if (path.startsWith("/compare/")) return CLAIMS_CHECKED;
   return LAST_UPDATED_ISO;
 }

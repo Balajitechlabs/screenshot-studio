@@ -1,4 +1,5 @@
 import { MAX_DEVICE_MOCKUPS } from "@/lib/constants/mockups";
+import { howToGuides } from "@/lib/seo/how-to-guides";
 import {
   IMAGE_FORMATS_SENTENCE,
   PRODUCT_FACTS,
@@ -6,13 +7,22 @@ import {
   atLeast,
 } from "@/lib/seo/product-facts";
 
-/** The date every tool detail on /guides/* was last checked against the vendor's own site. */
+/** The date every tool detail in the roundup guides was last checked against the vendor's own site. */
 export const GUIDES_UPDATED = "2026-09-24";
 
-export const GUIDES_UPDATED_LABEL = new Date(GUIDES_UPDATED).toLocaleDateString(
-  "en-US",
-  { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" },
-);
+/** The date the how-to guides were last checked against the editor. */
+export const HOW_TO_UPDATED = "2026-09-27";
+
+export function formatGuideDate(isoDate: string): string {
+  return new Date(isoDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+export const GUIDES_UPDATED_LABEL = formatGuideDate(GUIDES_UPDATED);
 
 export interface GuideTool {
   name: string;
@@ -24,16 +34,35 @@ export interface GuideTool {
   limitations: string;
 }
 
-export interface Guide {
+interface GuideBase {
   slug: string;
   title: string;
   metaDescription: string;
   keywords: string[];
   answer: string;
-  criteria: string;
-  tools: GuideTool[];
   faqs: { q: string; a: string }[];
 }
+
+export interface RoundupGuide extends GuideBase {
+  kind: "roundup";
+  criteria: string;
+  tools: GuideTool[];
+}
+
+export interface GuideLink {
+  href: string;
+  label: string;
+}
+
+export interface HowToGuide extends GuideBase {
+  kind: "how-to";
+  cta: GuideLink;
+  steps: { title: string; body: string }[];
+  sections: { heading: string; paragraphs: string[]; bullets?: string[] }[];
+  related: GuideLink[];
+}
+
+export type Guide = RoundupGuide | HowToGuide;
 
 const STUDIO_LICENSE = `Free, open source (${PRODUCT_FACTS.license})`;
 
@@ -94,8 +123,20 @@ const PIKA_STYLE: GuideTool = {
     "Tilt, background images, and some templates are Pro only, and it lists no animation or video export.",
 };
 
-export const guides: Guide[] = [
+const BRANDBIRD: GuideTool = {
+  name: "BrandBird",
+  url: "https://brandbird.app",
+  bestFor: "Marketing graphics with 3D rotation",
+  price: "Free with watermark; Pro $15/mo; Lifetime $179",
+  platform: "Browser, Mac app, Chrome extension, and Figma plugin",
+  summary:
+    "Turns screenshots into social graphics with iPhone, iPad, MacBook, Apple Watch, and browser frames, plus 3D rotation.",
+  limitations: "Free exports carry a watermark that only Pro or Lifetime removes.",
+};
+
+const roundupGuides: RoundupGuide[] = [
   {
+    kind: "roundup",
     slug: "best-free-screenshot-mockup-generators",
     title: "Best Free Screenshot Mockup Generators (2026)",
     metaDescription:
@@ -165,6 +206,7 @@ export const guides: Guide[] = [
     ],
   },
   {
+    kind: "roundup",
     slug: "best-free-screenshot-editors-no-watermark",
     title: "Best Free Screenshot Editors With No Watermark (2026)",
     metaDescription:
@@ -300,6 +342,7 @@ export const guides: Guide[] = [
     ],
   },
   {
+    kind: "roundup",
     slug: "best-code-to-image-tools",
     title: "Best Code to Image Tools for READMEs and Social Posts (2026)",
     metaDescription:
@@ -402,6 +445,7 @@ export const guides: Guide[] = [
     ],
   },
   {
+    kind: "roundup",
     slug: "best-free-shots-so-alternatives",
     title: "Best Free Shots.so Alternatives (2026)",
     metaDescription:
@@ -442,16 +486,7 @@ export const guides: Guide[] = [
         limitations: "No device mockups or 3D.",
       },
       MOCKUPHONE,
-      {
-        name: "BrandBird",
-        url: "https://brandbird.app",
-        bestFor: "Marketing graphics with 3D rotation",
-        price: "Free with watermark; Pro $15/mo; Lifetime $179",
-        platform: "Browser, Mac app, Chrome extension, and Figma plugin",
-        summary:
-          "Turns screenshots into social graphics with iPhone, iPad, MacBook, Apple Watch, and browser frames, plus 3D rotation.",
-        limitations: "Free exports carry a watermark that only Pro or Lifetime removes.",
-      },
+      BRANDBIRD,
     ],
     faqs: [
       {
@@ -472,7 +507,67 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    kind: "roundup",
+    slug: "best-free-screely-alternatives",
+    title: "Best Free Screely Alternatives (2026)",
+    metaDescription:
+      "Free alternatives to Screely for framing screenshots: Screenshot Studio, DeviceShots, SnapMock, Shots.so, Pika Style, MockUPhone, and BrandBird, compared on frames, 3D, and video.",
+    keywords: [
+      "screely alternative",
+      "screely alternatives",
+      "sites like screely",
+      "screely vs",
+      "screenshot window frame online",
+      "free screenshot mockup tool",
+    ],
+    answer:
+      "Screely is a free, simple way to put a screenshot in a macOS or Windows window on a background. If you need more, Screenshot Studio adds device mockups, 3D perspective, annotation, blur, and video export for free; DeviceShots has the biggest free device catalog; and SnapMock adds free perspective presets. Screely is still the quickest option for a plain window frame, and it exports PDF, which most alternatives do not.",
+    criteria:
+      "Each pick does Screely's core job, framing a screenshot on a background for free, and adds at least one thing Screely does not: device frames, 3D, annotation, or video.",
+    tools: [
+      {
+        name: "Screenshot Studio",
+        url: "/compare/screely",
+        bestFor: "Window frames plus devices, 3D, and video",
+        price: STUDIO_LICENSE,
+        platform: "Browser",
+        summary: `Safari and Chrome window frames in light and dark with an editable URL bar, iPhone, MacBook, and Apple Watch mockups, 3D perspective, arrows, text, and blur, plus a keyframe animation timeline with ${atLeast(PRODUCT_FACTS.animationPresets)} presets. Exports ${IMAGE_FORMATS_SENTENCE} images and MP4 or WebM video, with no account and no watermark.`,
+        limitations: "No PDF export and no browser extension for capturing tabs.",
+      },
+      DEVICESHOTS,
+      SNAPMOCK,
+      SHOTS_SO,
+      PIKA_STYLE,
+      MOCKUPHONE,
+      BRANDBIRD,
+    ],
+    faqs: [
+      {
+        q: "What is the best free alternative to Screely?",
+        a: "Screenshot Studio is the closest free upgrade: it keeps Screely's window frames and backgrounds and adds device mockups, 3D, annotation, blur, and video export, with no account and no watermark. For the largest set of free device frames, try DeviceShots.",
+      },
+      {
+        q: "Is Screely free?",
+        a: "Yes. Screely's site lists no signup, no watermark, and no export limits.",
+      },
+      {
+        q: "Which Screely alternatives have phone mockups?",
+        a: "Screenshot Studio, DeviceShots, SnapMock, Shots.so, Pika Style, MockUPhone, and BrandBird all include phone frames. MockUPhone and SnapMock also cover Android devices.",
+      },
+      {
+        q: "Can I annotate screenshots in a Screely alternative?",
+        a: "Yes. Screenshot Studio has arrows, lines, shapes, text, and blur or mosaic regions in the same editor as its frames and backgrounds.",
+      },
+    ],
+  },
 ];
+
+export const guides: Guide[] = [...howToGuides, ...roundupGuides];
+
+export function guideUpdated(guide: Guide): string {
+  return guide.kind === "roundup" ? GUIDES_UPDATED : HOW_TO_UPDATED;
+}
 
 export function getGuide(slug: string): Guide | undefined {
   return guides.find((guide) => guide.slug === slug);

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight01Icon } from "hugeicons-react";
 import { Navigation } from "@/components/landing/Navigation";
 import { Footer } from "@/components/landing/Footer";
+import { CtaBand, LinkCardGrid } from "@/components/seo/ContentBlocks";
+import { SectionTitle, ToolHero } from "@/components/tools/ToolLayout";
 import { CLAIMS_CHECKED_LABEL, comparisons } from "@/lib/seo/comparisons";
+import { guides } from "@/lib/seo/guides";
 import { buildCollectionJsonLd } from "@/lib/seo/json-ld";
 import { OG_DEFAULTS } from "@/lib/seo/metadata";
 
@@ -47,93 +48,75 @@ export default function CompareHubPage() {
       url: `/compare/${comparison.slug}`,
     })),
   );
+  const roundups = guides.filter((guide) => guide.kind === "roundup");
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col bg-background">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Navigation />
 
-      <main className="bg-background">
-        <section className="px-6 pt-28 pb-12">
-          <div className="mx-auto max-w-5xl">
-            <h1 className="mb-3 text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">
-              How Screenshot Studio Compares
-            </h1>
-            <p className="max-w-2xl text-base text-muted-foreground">
-              Honest, feature-by-feature breakdowns against the tools people
-              weigh Screenshot Studio against. Each page lists what the
-              alternative costs, where it is genuinely stronger, and where
-              Screenshot Studio does more for free.
-            </p>
-          </div>
-        </section>
+      <main className="flex-1 px-6 pb-20 pt-32">
+        <div className="mx-auto flex max-w-5xl flex-col gap-16 sm:gap-20">
+          <ToolHero
+            parent={null}
+            name="Compare"
+            title="How Screenshot Studio Compares"
+            intro="Honest, feature-by-feature breakdowns against the tools people weigh Screenshot Studio against. Each page lists what the alternative costs, where it is genuinely stronger, and where Screenshot Studio does more for free."
+          />
 
-        <section className="px-6 pb-16">
-          <div className="mx-auto max-w-5xl">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {comparisons.map((comparison) => (
-                <Link
-                  key={comparison.slug}
-                  href={`/compare/${comparison.slug}`}
-                  className="group flex flex-col rounded-xl border border-border bg-card p-5 transition-colors hover:border-foreground/25"
-                >
-                  <span className="mb-1.5 flex items-center justify-between gap-2 text-base font-medium text-foreground">
-                    vs {comparison.competitorName}
-                    <ArrowRight01Icon
-                      size={16}
-                      className="text-muted-foreground transition-transform group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {comparison.tagline}
-                  </span>
-                  <span className="mt-3 text-xs text-muted-foreground/80">
-                    {comparison.competitorName} pricing:{" "}
-                    {comparison.competitorPricing}
-                  </span>
-                </Link>
-              ))}
+          <section>
+            <SectionTitle>Head-to-head comparisons</SectionTitle>
+            <div className="mt-5">
+              <LinkCardGrid
+                items={comparisons.map((comparison) => ({
+                  href: `/compare/${comparison.slug}`,
+                  eyebrow: "Screenshot Studio vs",
+                  title: comparison.competitorName,
+                  description: comparison.tagline,
+                  meta: `${comparison.competitorName}: ${comparison.competitorPricing}`,
+                }))}
+              />
             </div>
-
-            <p className="mt-8 max-w-2xl text-xs text-muted-foreground/80">
-              All competitor pricing and feature details on these pages were
-              checked on {CLAIMS_CHECKED_LABEL} against each vendor&apos;s own
-              site. Third-party plans change without notice, so confirm current
+            <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground/80">
+              All competitor pricing and feature details were checked on{" "}
+              {CLAIMS_CHECKED_LABEL} against each vendor&apos;s own site.
+              Third-party plans change without notice, so confirm current
               pricing before deciding.
             </p>
+          </section>
 
-            <p className="mt-12 max-w-2xl text-sm text-muted-foreground">
-              Rather just try it? Open the{" "}
-              <Link href="/editor" className="underline">
-                Screenshot Studio editor
-              </Link>
-              , browse the{" "}
-              <Link href="/tools" className="underline">
-                free image tools
-              </Link>
-              , or read what it does for{" "}
-              <Link href="/for/developers" className="underline">
-                developers
-              </Link>
-              ,{" "}
-              <Link href="/for/designers" className="underline">
-                designers
-              </Link>
-              , and{" "}
-              <Link href="/for/marketers" className="underline">
-                marketers
-              </Link>
-              .
+          <section>
+            <SectionTitle>Best-of roundups</SectionTitle>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              Weighing more than two tools? These guides rank every option,
+              including the ones that beat Screenshot Studio at something.
             </p>
-          </div>
-        </section>
+            <div className="mt-5">
+              <LinkCardGrid
+                columns={2}
+                items={roundups.map((guide) => ({
+                  href: `/guides/${guide.slug}`,
+                  eyebrow: "Guide",
+                  title: guide.title,
+                  description: guide.metaDescription,
+                }))}
+              />
+            </div>
+          </section>
+
+          <CtaBand
+            title="Rather just try it?"
+            description="Open the editor and drop in a screenshot. Every feature is free, with no account and no watermark."
+            href="/editor"
+            label="Open Free Editor"
+          />
+        </div>
       </main>
 
-      <Footer />
-    </>
+      <Footer brandName="Screenshot Studio" />
+    </div>
   );
 }
