@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { NewTwitterIcon } from "hugeicons-react";
 import { GitHubIcon } from "@/components/ui/github-star-button";
+import { TOOLS } from "@/lib/seo/tools";
+import { guides } from "@/lib/seo/guides";
 
 interface FooterProps {
   brandName?: string;
@@ -39,6 +41,20 @@ const navCol3 = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;
+
+const directoryRows = [
+  {
+    label: "Image tools",
+    links: TOOLS.map((tool) => ({ href: tool.slug, label: tool.name })),
+  },
+  {
+    label: "Guides",
+    links: guides.map((guide) => ({
+      href: `/guides/${guide.slug}`,
+      label: guide.title,
+    })),
+  },
+];
 
 function FooterNavLink({
   href,
@@ -126,7 +142,31 @@ export function Footer({ brandName = "Screenshot Studio" }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <nav
+          aria-label="Site directory"
+          className="mt-10 flex flex-col gap-3 border-t border-border pt-6"
+        >
+          {directoryRows.map((row) => (
+            <p key={row.label} className="text-xs leading-6 text-muted-foreground">
+              <span className="mr-2 font-medium text-foreground/80">
+                {row.label}
+              </span>
+              {row.links.map((link, index) => (
+                <span key={link.href}>
+                  {index > 0 && <span aria-hidden="true"> · </span>}
+                  <Link
+                    href={link.href}
+                    className="transition-colors duration-150 hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </span>
+              ))}
+            </p>
+          ))}
+        </nav>
+
+        <div className="mt-6 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
           <div className="flex flex-wrap items-center gap-2">
             <a
               href={GITHUB_URL}

@@ -81,6 +81,16 @@ const nextConfig: NextConfig = {
         destination: "/editor",
         statusCode: 301,
       },
+      {
+        source: "/free-screenshot-editor-online",
+        destination: "/free-screenshot-editor",
+        statusCode: 301,
+      },
+      {
+        source: "/free-screenshot-studio/:path*",
+        destination: "/free-screenshot-editor",
+        statusCode: 301,
+      },
     ];
   },
 
