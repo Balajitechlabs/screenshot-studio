@@ -91,6 +91,11 @@ const nextConfig: NextConfig = {
         destination: "/free-screenshot-editor",
         statusCode: 301,
       },
+      {
+        source: "/blog/:slug*",
+        destination: "/guides/:slug*",
+        statusCode: 301,
+      },
     ];
   },
 

@@ -306,6 +306,13 @@ export function Navigation({
           </div>
 
           <Link
+            href="/guides"
+            className="text-[15px] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Blog
+          </Link>
+
+          <Link
             href="/contact"
             className="text-[15px] text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -368,6 +375,13 @@ export function Navigation({
               {featuredResource.ctaLabel}
             </Link>
             <div className="my-2 h-px bg-foreground/10" />
+            <Link
+              href="/guides"
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-md px-3 py-2.5 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+            >
+              Blog
+            </Link>
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
