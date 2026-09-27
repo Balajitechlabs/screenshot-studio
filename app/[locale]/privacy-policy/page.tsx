@@ -346,12 +346,13 @@ export default function PrivacyPolicyPage() {
             <p className="leading-relaxed text-muted-foreground">
               If you visit from the European Economic Area, the United Kingdom,
               or Switzerland, a consent message from a Google-certified consent
-              management platform asks for your choice before personalized ads
-              and non-essential cookies are used. If you decline, Google may
-              still show non-personalized ads, which use cookies only for
-              frequency capping, aggregated reporting, and fraud prevention. You
-              can change your choice at any time from the privacy link shown on
-              the page.
+              management platform asks for your choice before Google and its ad
+              partners use cookies or your data for personalized ads. If you
+              decline, Google may still show non-personalized ads, which use
+              cookies only for frequency capping, aggregated reporting, and
+              fraud prevention. You can change your choice at any time from the
+              &quot;Privacy and cookie settings&quot; link at the bottom of the
+              page.
             </p>
           </Section>
 
