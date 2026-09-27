@@ -1,0 +1,49 @@
+name: IndexNow
+
+on:
+  deployment_status:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: read
+
+concurrency:
+  group: indexnow
+
+jobs:
+  submit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment.environment == 'Production' &&
+      github.event.deployment_status.state == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.deployment.sha || github.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Find the previous production deploy
+        id: previous
+        if: github.event_name == 'deployment_status'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT_ID: ${{ github.event.deployment.id }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/deployments?environment=Production&per_page=30" \
+            --jq ".[] | select(.id < $CURRENT_ID) | \"\(.id) \(.sha)\"" |
+          while read -r id sha; do
+            if [ "$(gh api "repos/$GITHUB_REPOSITORY/deployments/$id/statuses" --jq 'any(.[]; .state == "success")')" = "true" ]; then
+              echo "sha=$sha" >> "$GITHUB_OUTPUT"
+              break
+            fi
+          done
+
+      - name: Submit changed pages to IndexNow
+        run: node scripts/indexnow.ts ${{ steps.previous.outputs.sha || '--all' }}
