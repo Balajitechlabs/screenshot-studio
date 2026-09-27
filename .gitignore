@@ -41,7 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 public/backgrounds
-/scripts
+/scripts/*
+!/scripts/indexnow.ts
 
 prisma/migrations
 /lib/generated/prisma
