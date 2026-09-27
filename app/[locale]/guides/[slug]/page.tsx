@@ -1,22 +1,23 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowRight01Icon, ArrowUpRight01Icon } from "hugeicons-react";
 import { Navigation } from "@/components/landing/Navigation";
 import { Footer } from "@/components/landing/Footer";
-import {
-  AnswerCard,
-  CTA_CLASS,
-  CtaBand,
-  LinkCardGrid,
-} from "@/components/seo/ContentBlocks";
-import { SectionTitle, ToolFaq, ToolHero } from "@/components/tools/ToolLayout";
-import { CARD_CLASS, INTER } from "@/components/tools/ui";
+import { CTA_CLASS, CtaBand } from "@/components/seo/ContentBlocks";
+import { GuideCard } from "@/components/seo/GuideCards";
+import { GuideToc } from "@/components/seo/GuideToc";
+import { SectionTitle, ToolFaq } from "@/components/tools/ToolLayout";
+import { INTER, MONO } from "@/components/tools/ui";
 import {
   GUIDES_UPDATED_LABEL,
   formatGuideDate,
   getGuide,
+  guideCover,
   guideUpdated,
   guides,
+  readingMinutes,
   type Guide,
   type GuideTool,
   type HowToGuide,
@@ -24,7 +25,10 @@ import {
 } from "@/lib/seo/guides";
 import { PERSON_ID } from "@/lib/seo/json-ld";
 import { OG_DEFAULTS, SITE_URL } from "@/lib/seo/metadata";
-import { cn } from "@/lib/utils";
+
+const PROSE = "text-[17px] leading-[1.75] text-foreground/85";
+
+const EYEBROW = "text-[11px] uppercase tracking-[0.08em] text-muted-foreground";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -62,21 +66,50 @@ function absoluteUrl(url: string): string {
   return url.startsWith("/") ? `${SITE_URL}${url}` : url;
 }
 
-function ToolLink({ tool }: { tool: GuideTool }): React.JSX.Element {
+function anchorId(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function tocFor(guide: Guide): { id: string; label: string }[] {
+  const body =
+    guide.kind === "roundup"
+      ? [
+          { id: "comparison", label: "Quick comparison" },
+          ...guide.tools.map((tool, index) => ({
+            id: anchorId(tool.name),
+            label: `${index + 1}. ${tool.name}`,
+          })),
+          { id: "method", label: "How we picked" },
+        ]
+      : [
+          { id: "steps", label: "Step by step" },
+          ...guide.sections.map((section) => ({
+            id: anchorId(section.heading),
+            label: section.heading,
+          })),
+          { id: "tools", label: "Tools used" },
+        ];
+  return [{ id: "answer", label: "Short answer" }, ...body, { id: "faq", label: "FAQ" }];
+}
+
+function VisitLink({ tool }: { tool: GuideTool }): React.JSX.Element {
+  const className =
+    "inline-flex items-center gap-1 text-sm font-medium text-foreground underline-offset-4 hover:underline";
   if (tool.url.startsWith("/")) {
     return (
-      <Link href={tool.url} className="underline-offset-4 hover:underline">
-        {tool.name}
+      <Link href={tool.url} className={className}>
+        Try it free
+        <ArrowRight01Icon aria-hidden="true" className="size-3.5" />
       </Link>
     );
   }
   return (
-    <a
-      href={tool.url}
-      rel="nofollow noopener"
-      className="underline-offset-4 hover:underline"
-    >
-      {tool.name}
+    <a href={tool.url} rel="nofollow noopener" className={className}>
+      Visit {new URL(tool.url).hostname.replace(/^www\./, "")}
+      <ArrowUpRight01Icon aria-hidden="true" className="size-3.5" />
     </a>
   );
 }
@@ -84,17 +117,18 @@ function ToolLink({ tool }: { tool: GuideTool }): React.JSX.Element {
 function RoundupBody({ guide }: { guide: RoundupGuide }): React.JSX.Element {
   return (
     <>
-      <section>
+      <section id="comparison" className="scroll-mt-28">
         <SectionTitle>Quick comparison</SectionTitle>
-        <div className={cn(CARD_CLASS, "mt-5 overflow-x-auto")}>
-          <table className="w-full min-w-[640px] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-border">
+        <div className="mt-5 overflow-x-auto rounded-2xl ring-1 ring-inset ring-border">
+          <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+            <thead className="bg-foreground/[0.03]">
+              <tr>
                 {["Tool", "Best for", "Price", "Runs on"].map((label) => (
                   <th
                     key={label}
                     scope="col"
-                    className="px-5 py-4 text-left font-medium text-muted-foreground"
+                    className={`${EYEBROW} px-4 py-3 font-normal`}
+                    style={{ fontFamily: MONO }}
                   >
                     {label}
                   </th>
@@ -103,19 +137,18 @@ function RoundupBody({ guide }: { guide: RoundupGuide }): React.JSX.Element {
             </thead>
             <tbody>
               {guide.tools.map((tool) => (
-                <tr
-                  key={tool.name}
-                  className="border-b border-border/60 last:border-b-0"
-                >
-                  <th
-                    scope="row"
-                    className="px-5 py-3.5 text-left font-semibold text-foreground"
-                  >
-                    {tool.name}
+                <tr key={tool.name} className="border-t border-border align-top">
+                  <th scope="row" className="px-4 py-3.5 font-medium text-foreground">
+                    <a
+                      href={`#${anchorId(tool.name)}`}
+                      className="underline-offset-4 hover:underline"
+                    >
+                      {tool.name}
+                    </a>
                   </th>
-                  <td className="px-5 py-3.5 text-muted-foreground">{tool.bestFor}</td>
-                  <td className="px-5 py-3.5 text-muted-foreground">{tool.price}</td>
-                  <td className="px-5 py-3.5 text-muted-foreground">{tool.platform}</td>
+                  <td className="px-4 py-3.5 text-foreground/75">{tool.bestFor}</td>
+                  <td className="px-4 py-3.5 text-foreground/75">{tool.price}</td>
+                  <td className="px-4 py-3.5 text-foreground/75">{tool.platform}</td>
                 </tr>
               ))}
             </tbody>
@@ -123,46 +156,48 @@ function RoundupBody({ guide }: { guide: RoundupGuide }): React.JSX.Element {
         </div>
       </section>
 
-      <section>
-        <SectionTitle>The picks</SectionTitle>
-        <ol className="mt-5 flex flex-col gap-3">
-          {guide.tools.map((tool, index) => (
-            <li key={tool.name} className={cn(CARD_CLASS, "p-6 sm:p-7")}>
-              <article>
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-foreground/[0.06] text-sm font-semibold text-foreground ring-1 ring-border">
-                    {index + 1}
-                  </span>
-                  <h2
-                    className="text-xl font-semibold tracking-[-0.02em] text-foreground"
-                    style={{ fontFamily: INTER }}
-                  >
-                    <ToolLink tool={tool} />
-                  </h2>
-                  <span className="rounded-full bg-foreground/[0.04] px-2.5 py-1 text-xs text-muted-foreground ring-1 ring-border">
-                    {tool.bestFor}
-                  </span>
-                </div>
-                <p className="mt-4 leading-relaxed text-muted-foreground">
-                  {tool.summary}
-                </p>
-                <dl className="mt-5 grid gap-x-6 gap-y-2 border-t border-border pt-5 text-sm sm:grid-cols-[7rem_1fr]">
-                  <dt className="font-medium text-foreground">Price</dt>
-                  <dd className="text-muted-foreground">{tool.price}</dd>
-                  <dt className="font-medium text-foreground">Runs on</dt>
-                  <dd className="text-muted-foreground">{tool.platform}</dd>
-                  <dt className="font-medium text-foreground">Limitations</dt>
-                  <dd className="text-muted-foreground">{tool.limitations}</dd>
-                </dl>
-              </article>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {guide.tools.map((tool, index) => (
+        <section
+          key={tool.name}
+          id={anchorId(tool.name)}
+          className="scroll-mt-28 border-t border-border pt-10"
+        >
+          <p className={EYEBROW} style={{ fontFamily: MONO }}>
+            Pick {index + 1} of {guide.tools.length} · Best for {tool.bestFor.toLowerCase()}
+          </p>
+          <h2
+            className="mt-2 text-2xl font-semibold tracking-[-0.025em] text-foreground"
+            style={{ fontFamily: INTER }}
+          >
+            {tool.name}
+          </h2>
+          <p className={`mt-4 ${PROSE}`}>{tool.summary}</p>
+          <dl className="mt-6 flex flex-col rounded-xl ring-1 ring-inset ring-border">
+            {[
+              ["Price", tool.price],
+              ["Runs on", tool.platform],
+              ["Limitations", tool.limitations],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                className="grid gap-1 border-t border-border px-4 py-3 first:border-t-0 sm:grid-cols-[7.5rem_1fr] sm:gap-4"
+              >
+                <dt className={`${EYEBROW} pt-0.5`} style={{ fontFamily: MONO }}>
+                  {label}
+                </dt>
+                <dd className="text-[15px] leading-relaxed text-foreground/85">{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="mt-5">
+            <VisitLink tool={tool} />
+          </div>
+        </section>
+      ))}
 
-      <section className={cn(CARD_CLASS, "p-6 sm:p-8")}>
+      <section id="method" className="scroll-mt-28 border-t border-border pt-10">
         <SectionTitle>How we picked</SectionTitle>
-        <p className="mt-3 leading-relaxed text-muted-foreground">
+        <p className={`mt-4 ${PROSE}`}>
           {guide.criteria} Every detail comes from each vendor&apos;s own site
           or repository, checked on {GUIDES_UPDATED_LABEL}. Plans change
           without notice, so confirm current pricing before you decide.
@@ -175,79 +210,93 @@ function RoundupBody({ guide }: { guide: RoundupGuide }): React.JSX.Element {
 function HowToBody({ guide }: { guide: HowToGuide }): React.JSX.Element {
   return (
     <>
-      <section>
+      <section id="steps" className="scroll-mt-28">
         <SectionTitle>Step by step</SectionTitle>
-        <ol className="mt-5 flex flex-col gap-3">
+        <ol className="mt-7 flex flex-col">
           {guide.steps.map((step, index) => (
             <li
               key={step.title}
-              className={cn(CARD_CLASS, "flex gap-4 p-5 sm:gap-5 sm:p-6")}
+              className="relative flex gap-5 pb-9 before:absolute before:bottom-1 before:left-4 before:top-10 before:w-px before:bg-border last:pb-0 last:before:hidden"
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-foreground/[0.06] text-sm font-semibold text-foreground ring-1 ring-border">
+              <span
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-card text-[13px] text-foreground ring-1 ring-inset ring-border"
+                style={{ fontFamily: MONO }}
+              >
                 {index + 1}
               </span>
-              <div>
-                <h3 className="text-base font-semibold tracking-[-0.01em] text-foreground">
+              <div className="min-w-0 pt-1">
+                <h3
+                  className="text-[17px] font-semibold tracking-[-0.01em] text-foreground"
+                  style={{ fontFamily: INTER }}
+                >
                   {step.title}
                 </h3>
-                <p className="mt-1.5 leading-relaxed text-muted-foreground">
-                  {step.body}
-                </p>
+                <p className={`mt-2 ${PROSE}`}>{step.body}</p>
               </div>
             </li>
           ))}
         </ol>
-        <div className="mt-6">
+        <div className="mt-9 pl-[3.25rem]">
           <Link href={guide.cta.href} className={CTA_CLASS}>
             {guide.cta.label}
           </Link>
         </div>
       </section>
 
-      <div className="flex max-w-3xl flex-col gap-12">
-        {guide.sections.map((section) => (
-          <section key={section.heading}>
-            <SectionTitle>{section.heading}</SectionTitle>
-            {section.paragraphs.map((paragraph) => (
-              <p
-                key={paragraph}
-                className="mt-4 leading-relaxed text-muted-foreground"
-              >
-                {paragraph}
-              </p>
-            ))}
-            {section.bullets ? (
-              <ul className="mt-4 flex list-disc flex-col gap-2 pl-5 leading-relaxed text-muted-foreground marker:text-muted-foreground/50">
-                {section.bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-            ) : null}
-          </section>
-        ))}
-      </div>
+      {guide.sections.map((section) => (
+        <section
+          key={section.heading}
+          id={anchorId(section.heading)}
+          className="scroll-mt-28 border-t border-border pt-10"
+        >
+          <SectionTitle>{section.heading}</SectionTitle>
+          {section.paragraphs.map((paragraph) => (
+            <p key={paragraph} className={`mt-4 ${PROSE}`}>
+              {paragraph}
+            </p>
+          ))}
+          {section.bullets ? (
+            <ul
+              className={`mt-4 flex list-disc flex-col gap-2.5 pl-5 marker:text-muted-foreground/60 ${PROSE}`}
+            >
+              {section.bullets.map((bullet) => (
+                <li key={bullet} className="pl-1">
+                  {bullet}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
+      ))}
 
-      <section>
+      <section id="tools" className="scroll-mt-28 border-t border-border pt-10">
         <SectionTitle>Tools used in this guide</SectionTitle>
-        <div className="mt-5">
-          <LinkCardGrid
-            items={guide.related.map((link) => ({
-              href: link.href,
-              title: link.label,
-            }))}
-          />
-        </div>
+        <ul className="mt-5 flex flex-wrap gap-2">
+          {guide.related.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className="inline-flex items-center gap-1.5 rounded-full bg-foreground/[0.04] px-3.5 py-2 text-sm text-foreground ring-1 ring-inset ring-border transition-colors hover:bg-foreground/[0.08]"
+              >
+                {link.label}
+                <ArrowRight01Icon aria-hidden="true" className="size-3.5 text-muted-foreground" />
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
     </>
   );
 }
 
 function moreGuidesFor(guide: Guide): Guide[] {
-  const sameKind = guides.filter(
-    (g) => g.slug !== guide.slug && g.kind === guide.kind,
-  );
-  const otherKind = guides.filter((g) => g.kind !== guide.kind);
-  return [...sameKind, ...otherKind].slice(0, 6);
+  const rank = (g: Guide): number =>
+    (g.kind === guide.kind ? 0 : 2) +
+    (g.kind === "how-to" && guide.kind === "how-to" && g.topic === guide.topic ? 0 : 1);
+  return guides
+    .filter((g) => g.slug !== guide.slug)
+    .sort((a, b) => rank(a) - rank(b))
+    .slice(0, 3);
 }
 
 export default async function GuidePage({ params }: PageProps) {
@@ -258,6 +307,7 @@ export default async function GuidePage({ params }: PageProps) {
   const pageUrl = `${SITE_URL}/guides/${guide.slug}`;
   const updated = guideUpdated(guide);
   const isRoundup = guide.kind === "roundup";
+  const cover = guideCover(guide.slug);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -279,6 +329,7 @@ export default async function GuidePage({ params }: PageProps) {
         dateModified: updated,
         author: { "@id": PERSON_ID },
         publisher: { "@id": `${SITE_URL}/#organization` },
+        image: absoluteUrl(cover),
         mainEntityOfPage: pageUrl,
       },
       ...(isRoundup
@@ -314,54 +365,113 @@ export default async function GuidePage({ params }: PageProps) {
       />
       <Navigation />
 
-      <main className="flex-1 px-6 pb-20 pt-32">
-        <div className="mx-auto flex max-w-5xl flex-col gap-16 sm:gap-20">
-          <div className="flex flex-col gap-10">
-            <ToolHero
-              parent={{ href: "/guides", label: "Guides" }}
-              name={isRoundup ? "Roundup" : "How-to"}
-              title={guide.title}
-              intro={guide.metaDescription}
-            >
-              <p className="mt-5 text-xs text-muted-foreground/80">
-                Updated <time dateTime={updated}>{formatGuideDate(updated)}</time>{" "}
-                by{" "}
-                <Link href="/about" className="underline underline-offset-4">
-                  Kartik Labhshetwar
+      <main className="flex-1 px-6 pb-20 pt-28 sm:pt-32">
+        <div className="mx-auto flex max-w-5xl flex-col gap-20 sm:gap-24">
+          <article>
+            <header className="max-w-3xl">
+              <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground">
+                <Link href="/" className="transition-colors hover:text-foreground">
+                  Home
                 </Link>
-                , maker of Screenshot Studio
+                <span aria-hidden="true" className="mx-1.5">/</span>
+                <Link href="/guides" className="transition-colors hover:text-foreground">
+                  Guides
+                </Link>
+                <span aria-hidden="true" className="mx-1.5">/</span>
+                <span aria-current="page" className="text-foreground">
+                  {isRoundup ? "Roundup" : "How-to"}
+                </span>
+              </nav>
+              <h1
+                className="mt-5 text-[2.25rem] font-semibold leading-[1.1] tracking-[-0.035em] text-foreground sm:text-5xl"
+                style={{ fontFamily: INTER }}
+              >
+                {guide.title}
+              </h1>
+              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+                {guide.metaDescription}
               </p>
-            </ToolHero>
+              <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+                <span className="max-sm:w-full">
+                  By{" "}
+                  <Link
+                    href="/about"
+                    className="text-foreground underline-offset-4 hover:underline"
+                  >
+                    Kartik Labhshetwar
+                  </Link>
+                  , maker of Screenshot Studio
+                </span>
+                <span aria-hidden="true" className="max-sm:hidden">
+                  ·
+                </span>
+                <span>
+                  Updated <time dateTime={updated}>{formatGuideDate(updated)}</time>
+                </span>
+                <span aria-hidden="true">·</span>
+                <span>{readingMinutes(guide)} min read</span>
+              </p>
+            </header>
 
-            <AnswerCard label="Short answer">
-              <p>{guide.answer}</p>
-              {isRoundup ? (
-                <p className="mt-4 text-sm text-muted-foreground">
-                  Screenshot Studio is our product. Every other tool is listed
-                  on its merits, with details checked against the
-                  vendor&apos;s own site.
-                </p>
-              ) : null}
-            </AnswerCard>
-          </div>
+            <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-3xl bg-card ring-1 ring-inset ring-border sm:aspect-[2/1]">
+              <Image
+                src={cover}
+                alt=""
+                fill
+                priority
+                sizes="(min-width: 1024px) 1024px, 100vw"
+                className="object-cover"
+              />
+            </div>
 
-          {isRoundup ? <RoundupBody guide={guide} /> : <HowToBody guide={guide} />}
+            <div className="mt-12 grid gap-16 lg:mt-16 lg:grid-cols-[minmax(0,42rem)_13rem] lg:justify-between">
+              <div className="flex min-w-0 flex-col gap-12">
+                <section
+                  id="answer"
+                  className="scroll-mt-28 rounded-2xl bg-card p-6 ring-1 ring-inset ring-border shadow-[var(--card-highlight-shadow)] sm:p-7"
+                >
+                  <p className={EYEBROW} style={{ fontFamily: MONO }}>
+                    Short answer
+                  </p>
+                  <p className="mt-3 text-[17px] leading-[1.7] text-foreground">
+                    {guide.answer}
+                  </p>
+                  {isRoundup ? (
+                    <p className="mt-4 border-t border-border pt-4 text-sm leading-relaxed text-muted-foreground">
+                      Screenshot Studio is our product. Every other tool is
+                      listed on its merits, with details checked against the
+                      vendor&apos;s own site.
+                    </p>
+                  ) : null}
+                </section>
 
-          <ToolFaq
-            faqs={guide.faqs.map((faq) => ({ question: faq.q, answer: faq.a }))}
-          />
+                {isRoundup ? <RoundupBody guide={guide} /> : <HowToBody guide={guide} />}
+
+                <div id="faq" className="scroll-mt-28 border-t border-border pt-10">
+                  <ToolFaq
+                    faqs={guide.faqs.map((faq) => ({ question: faq.q, answer: faq.a }))}
+                  />
+                </div>
+              </div>
+
+              <aside className="hidden lg:block">
+                <div className="sticky top-28">
+                  <GuideToc items={tocFor(guide)} />
+                </div>
+              </aside>
+            </div>
+          </article>
 
           <section>
             <SectionTitle>More guides</SectionTitle>
-            <div className="mt-5">
-              <LinkCardGrid
-                items={moreGuidesFor(guide).map((g) => ({
-                  href: `/guides/${g.slug}`,
-                  eyebrow: g.kind === "roundup" ? "Roundup" : "How-to",
-                  title: g.title,
-                  description: g.metaDescription,
-                }))}
-              />
+            <div className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+              {moreGuidesFor(guide).map((g) => (
+                <GuideCard
+                  key={g.slug}
+                  guide={g}
+                  sizes="(min-width: 1024px) 330px, (min-width: 640px) 50vw, 100vw"
+                />
+              ))}
             </div>
           </section>
 

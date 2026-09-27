@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 export const INTER =
   "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
 
+export const MONO = "var(--font-geist-mono), ui-monospace, monospace";
+
 export const CARD_CLASS =
   "rounded-2xl bg-card ring-1 ring-inset ring-border shadow-[var(--card-highlight-shadow)]";
 

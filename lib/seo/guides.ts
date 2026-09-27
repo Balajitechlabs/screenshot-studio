@@ -56,6 +56,7 @@ export interface GuideLink {
 
 export interface HowToGuide extends GuideBase {
   kind: "how-to";
+  topic: "markup" | "present" | "publish";
   cta: GuideLink;
   steps: { title: string; body: string }[];
   sections: { heading: string; paragraphs: string[]; bullets?: string[] }[];
@@ -571,4 +572,31 @@ export function guideUpdated(guide: Guide): string {
 
 export function getGuide(slug: string): Guide | undefined {
   return guides.find((guide) => guide.slug === slug);
+}
+
+export function guideCover(slug: string): string {
+  return `/guide-covers/${slug}.webp`;
+}
+
+/** Title without its trailing qualifier such as "(2026)" or "(Free)". */
+export function guideShortTitle(guide: Guide): string {
+  return guide.title.replace(/\s*\([^)]*\)$/, "");
+}
+
+/** Estimated reading time in minutes at 220 words per minute. */
+export function readingMinutes(guide: Guide): number {
+  const body =
+    guide.kind === "roundup"
+      ? [guide.criteria, ...guide.tools.flatMap((tool) => [tool.summary, tool.limitations])]
+      : [
+          ...guide.steps.map((step) => step.body),
+          ...guide.sections.flatMap((section) => [
+            ...section.paragraphs,
+            ...(section.bullets ?? []),
+          ]),
+        ];
+  const words = [guide.answer, ...body, ...guide.faqs.flatMap((faq) => [faq.q, faq.a])]
+    .join(" ")
+    .split(/\s+/).length;
+  return Math.max(1, Math.round(words / 220));
 }

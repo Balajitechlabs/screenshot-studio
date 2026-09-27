@@ -56,6 +56,7 @@ const PRIVACY_FAQ = {
 export const howToGuides: HowToGuide[] = [
   {
     kind: "how-to",
+    topic: "markup",
     slug: "how-to-edit-screenshot-online",
     title: "How to Edit a Screenshot Online for Free (2026)",
     metaDescription:
@@ -132,6 +133,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "markup",
     slug: "how-to-add-text-to-screenshot",
     title: "How to Add Text to a Screenshot Online (Free)",
     metaDescription:
@@ -206,6 +208,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "markup",
     slug: "how-to-blur-screenshot",
     title: "How to Blur Part of a Screenshot Online (Free)",
     metaDescription:
@@ -281,6 +284,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "markup",
     slug: "how-to-annotate-screenshot",
     title: "How to Annotate a Screenshot Online (Arrows, Shapes, Text)",
     metaDescription:
@@ -355,6 +359,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "present",
     slug: "how-to-beautify-screenshots",
     title: "How to Make Screenshots Look Professional (Free Beautifier)",
     metaDescription:
@@ -430,6 +435,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "present",
     slug: "how-to-animate-screenshots",
     title: "How to Animate a Screenshot and Export a Video (Free)",
     metaDescription:
@@ -505,6 +511,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "present",
     slug: "how-to-make-3d-screenshot",
     title: "How to Make a 3D Screenshot Mockup Online (Free)",
     metaDescription:
@@ -578,6 +585,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "present",
     slug: "how-to-put-screenshot-in-iphone-mockup",
     title: "How to Put a Screenshot in an iPhone or MacBook Mockup",
     metaDescription:
@@ -652,6 +660,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "present",
     slug: "how-to-add-browser-frame-to-screenshot",
     title: "How to Add a Browser Window Frame to a Screenshot",
     metaDescription:
@@ -718,6 +727,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "publish",
     slug: "instagram-screenshot-size",
     title: "How to Post Screenshots on Instagram Without Cropping",
     metaDescription:
@@ -787,6 +797,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "publish",
     slug: "app-store-screenshot-sizes",
     title: "App Store Screenshot Sizes and How to Make Them (2026)",
     metaDescription:
@@ -876,6 +887,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "publish",
     slug: "how-to-take-and-edit-screenshot",
     title: "How to Take a Screenshot and Edit It (Mac, Windows, Chromebook)",
     metaDescription:
@@ -962,6 +974,7 @@ export const howToGuides: HowToGuide[] = [
   },
   {
     kind: "how-to",
+    topic: "publish",
     slug: "how-to-screenshot-a-tweet",
     title: "How to Screenshot a Tweet (X Post) Cleanly for Free",
     metaDescription:

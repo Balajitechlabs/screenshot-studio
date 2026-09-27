@@ -11,7 +11,20 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
-import { ArrowDown01Icon, ArrowRight01Icon, Menu01Icon } from "hugeicons-react";
+import {
+  ArrowDown01Icon,
+  ArrowRight01Icon,
+  Clock01Icon,
+  CommandLineIcon,
+  CropIcon,
+  Edit02Icon,
+  EraserIcon,
+  Layers01Icon,
+  Menu01Icon,
+  NewTwitterIcon,
+  PaintBoardIcon,
+  SourceCodeIcon,
+} from "hugeicons-react";
 import { GitHubStarButton } from "@/components/ui/github-star-button";
 import {
   Sheet,
@@ -25,21 +38,79 @@ interface NavigationProps {
   brandName?: string;
 }
 
-const resourceLinks = [
-  { label: "Features", href: "/features" },
-  { label: "Image Tools", href: "/tools" },
-  { label: "Code Images", href: "/code" },
-  { label: "Tweet Images", href: "/tweet" },
-  { label: "Remove Background", href: "/remove-background" },
-  { label: "For Designers", href: "/for/designers" },
-  { label: "For Developers", href: "/for/developers" },
-  { label: "Screenshot Editor", href: "/free-screenshot-editor" },
+const resourceGroups = [
+  {
+    title: "Create",
+    links: [
+      {
+        label: "Screenshot Editor",
+        description: "Frame, annotate, and export online",
+        href: "/free-screenshot-editor",
+        icon: Edit02Icon,
+      },
+      {
+        label: "Code Images",
+        description: "Polished images of code snippets",
+        href: "/code",
+        icon: SourceCodeIcon,
+      },
+      {
+        label: "Tweet Images",
+        description: "Clean cards from any X post",
+        href: "/tweet",
+        icon: NewTwitterIcon,
+      },
+      {
+        label: "Remove Background",
+        description: "Cut the subject out of any image",
+        href: "/remove-background",
+        icon: EraserIcon,
+      },
+      {
+        label: "Image Tools",
+        description: "Crop, resize, compress, convert",
+        href: "/tools",
+        icon: CropIcon,
+      },
+    ],
+  },
+  {
+    title: "Learn",
+    links: [
+      {
+        label: "Compare",
+        description: "Side by side with the alternatives",
+        href: "/compare",
+        icon: Layers01Icon,
+      },
+      {
+        label: "For Designers",
+        description: "Mockups and polish for portfolios",
+        href: "/for/designers",
+        icon: PaintBoardIcon,
+      },
+      {
+        label: "For Developers",
+        description: "Code shots for READMEs and docs",
+        href: "/for/developers",
+        icon: CommandLineIcon,
+      },
+      {
+        label: "Changelog",
+        description: "What shipped recently",
+        href: "/changelog",
+        icon: Clock01Icon,
+      },
+    ],
+  },
 ] as const;
 
-const featuredResource = {
-  headline: "Code Images are now a standalone tool.",
-  ctaLabel: "Try Code Images",
-  ctaHref: "/code",
+const featuredGuide = {
+  eyebrow: "Featured guide",
+  title: "Make any screenshot look professional",
+  href: "/guides/how-to-beautify-screenshots",
+  description: "Backgrounds, shadows, and frames in under a minute.",
+  cover: "/guide-covers/how-to-beautify-screenshots.webp",
 };
 
 const SCROLL_COMPACT_AT = 10;
@@ -230,7 +301,7 @@ export function Navigation({
 
             <AnimatePresence>
               {resourcesOpen ? (
-                <div className="absolute left-0 top-full z-50 pt-2">
+                <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3">
                   <motion.div
                     key="resources-menu"
                     role="menu"
@@ -263,42 +334,71 @@ export function Navigation({
                           }
                     }
                     transition={{ duration: 0.2, ease: MENU_EASE_OUT }}
-                    style={{ transformOrigin: "top left" }}
-                    className="flex w-fit overflow-hidden rounded-md border-0 bg-popover p-0 shadow-sm ring-1 ring-border/60"
+                    style={{ transformOrigin: "top center" }}
+                    className="flex overflow-hidden rounded-2xl bg-popover p-2 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)] ring-1 ring-border/70"
                   >
-                    <div className="min-w-32 p-2 lg:min-w-36 lg:p-2.5">
-                      {resourceLinks.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          role="menuitem"
-                          className="flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors hover:bg-muted"
-                        >
-                          <span className="whitespace-nowrap text-sm font-medium text-foreground">
-                            {link.label}
-                          </span>
-                        </Link>
+                    <div className="grid w-[37rem] grid-cols-2 gap-x-1">
+                      {resourceGroups.map((group) => (
+                        <div key={group.title} className="flex flex-col p-1">
+                          <p className="px-2.5 pb-1.5 pt-2 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
+                            {group.title}
+                          </p>
+                          {group.links.map((link) => (
+                            <Link
+                              key={link.href}
+                              href={link.href}
+                              role="menuitem"
+                              onClick={() => setResourcesOpen(false)}
+                              className="group/item flex items-start gap-3 rounded-xl px-2.5 py-2 transition-colors hover:bg-foreground/[0.05] focus-visible:bg-foreground/[0.05] focus-visible:outline-none"
+                            >
+                              <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/[0.04] text-muted-foreground ring-1 ring-inset ring-border transition-colors group-hover/item:text-foreground">
+                                <link.icon className="size-4" aria-hidden="true" />
+                              </span>
+                              <span className="flex min-w-0 flex-col">
+                                <span className="text-sm font-medium text-foreground">
+                                  {link.label}
+                                </span>
+                                <span className="text-[13px] leading-snug text-muted-foreground">
+                                  {link.description}
+                                </span>
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
                       ))}
                     </div>
 
-                    <div className="hidden w-44 bg-muted/50 p-3 lg:block lg:w-48">
-                      <div className="flex flex-col gap-2.5">
-                        <p className="text-sm text-muted-foreground">
-                          {featuredResource.headline}
-                        </p>
-                        <div className="relative aspect-video w-full overflow-hidden rounded-md bg-card shadow-sm ring-1 ring-border/60">
-                          <div className="absolute inset-x-2.5 top-2.5 h-1 rounded-full bg-muted" />
-                          <div className="absolute inset-x-2.5 top-5 bottom-2.5 rounded-md bg-gradient-to-br from-muted-foreground/20 via-muted to-muted-foreground/10" />
-                        </div>
-                        <Link
-                          href={featuredResource.ctaHref}
-                          className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:opacity-80 transition-opacity"
-                        >
-                          {featuredResource.ctaLabel}
-                          <ArrowRight01Icon className="size-3.5" />
-                        </Link>
-                      </div>
-                    </div>
+                    <Link
+                      href={featuredGuide.href}
+                      role="menuitem"
+                      onClick={() => setResourcesOpen(false)}
+                      className="group/feature hidden w-56 shrink-0 flex-col overflow-hidden rounded-xl bg-card ring-1 ring-inset ring-border transition-colors hover:ring-foreground/20 lg:flex"
+                    >
+                      <span className="relative aspect-[4/3] w-full overflow-hidden">
+                        <Image
+                          src={featuredGuide.cover}
+                          alt=""
+                          fill
+                          sizes="224px"
+                          className="object-cover transition-transform duration-500 ease-out group-hover/feature:scale-[1.04] motion-reduce:transition-none"
+                        />
+                      </span>
+                      <span className="flex flex-1 flex-col gap-1.5 p-3.5">
+                        <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
+                          {featuredGuide.eyebrow}
+                        </span>
+                        <span className="text-sm font-medium leading-snug text-foreground">
+                          {featuredGuide.title}
+                        </span>
+                        <span className="text-[13px] leading-snug text-muted-foreground">
+                          {featuredGuide.description}
+                        </span>
+                        <span className="mt-auto inline-flex items-center gap-1 pt-2 text-[13px] text-muted-foreground transition-colors group-hover/feature:text-foreground">
+                          Read the guide
+                          <ArrowRight01Icon className="size-3.5" aria-hidden="true" />
+                        </span>
+                      </span>
+                    </Link>
                   </motion.div>
                 </div>
               ) : null}
@@ -354,26 +454,24 @@ export function Navigation({
             >
               Product
             </Link>
-            <div className="px-3 pb-1 pt-3 text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
-              Resources
-            </div>
-            {resourceLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="rounded-md px-3 py-2.5 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
-              >
-                {link.label}
-              </Link>
+            {resourceGroups.map((group) => (
+              <div key={group.title} className="flex flex-col gap-0.5">
+                <div className="px-3 pb-1 pt-3 text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
+                  {group.title}
+                </div>
+                {group.links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-md px-3 py-2 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+                  >
+                    <link.icon className="size-4 shrink-0" aria-hidden="true" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             ))}
-            <Link
-              href={featuredResource.ctaHref}
-              onClick={() => setMobileMenuOpen(false)}
-              className="rounded-md px-3 py-2.5 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
-            >
-              {featuredResource.ctaLabel}
-            </Link>
             <div className="my-2 h-px bg-foreground/10" />
             <Link
               href="/guides"
