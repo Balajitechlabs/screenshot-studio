@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { NewTwitterIcon } from "hugeicons-react";
 import { GitHubIcon } from "@/components/ui/github-star-button";
+import { AdSenseScript } from "@/components/AdSenseScript";
 import { TOOLS } from "@/lib/seo/tools";
 import { guides } from "@/lib/seo/guides";
 
@@ -78,6 +79,7 @@ export function Footer({ brandName = "Screenshot Studio" }: FooterProps) {
 
   return (
     <footer className="bg-background px-6 pb-8 pt-4 sm:pb-10">
+      <AdSenseScript />
       <div className="mx-auto max-w-6xl rounded-2xl bg-card px-6 py-12 ring-1 ring-border shadow-[var(--card-edge-shadow)] sm:px-8 sm:py-14">
         <div className="grid grid-cols-1 items-stretch gap-10 md:grid-cols-2 md:gap-12 lg:gap-16">
           <div className="flex h-full flex-col gap-6">

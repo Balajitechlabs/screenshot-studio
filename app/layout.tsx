@@ -36,6 +36,7 @@ import { QueryProvider } from "@/lib/query-client";
 import { GlobalDropZone } from "@/components/GlobalDropZone";
 import { PathTracker } from "@/components/landing/GoBackButton";
 import { getRootJsonLd } from "@/lib/seo/json-ld";
+import { ADSENSE_CLIENT } from "@/components/AdSenseScript";
 import { PRODUCT_FACTS, atLeast } from "@/lib/seo/product-facts";
 
 // System UI fonts
@@ -414,6 +415,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   category: "Design Tools",
+  other: {
+    "google-adsense-account": ADSENSE_CLIENT,
+  },
 };
 
 export const viewport: Viewport = {
@@ -449,12 +453,6 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(rootJsonLd) }}
-        />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8704843786311642"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
         />
         <Script
           async

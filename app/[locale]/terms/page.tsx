@@ -31,7 +31,7 @@ export default function TermsPage() {
           Terms & Conditions
         </h1>
         <p className="mb-12 text-sm text-muted-foreground">
-          Last updated: June 2, 2026
+          Last updated: September 27, 2026
         </p>
 
         <div className="space-y-8">
@@ -128,7 +128,49 @@ export default function TermsPage() {
               className="mb-3 text-xl font-semibold tracking-[-0.02em] text-foreground"
               style={{ fontFamily: INTER }}
             >
-              5. Disclaimer of Warranties
+              5. Advertising and Third-Party Services
+            </h2>
+            <p className="mb-3 leading-relaxed text-muted-foreground">
+              The Service is free to use and is supported by ads served by
+              Google AdSense. Ads are provided by third parties, and we are not
+              responsible for the products or services they promote. You agree
+              not to click ads artificially, use automated tools to generate ad
+              impressions or clicks, or encourage others to do so.
+            </p>
+            <p className="leading-relaxed text-muted-foreground">
+              Some features rely on third-party services, such as Microlink for
+              URL screenshots and X for tweet imports, and guides link to
+              external websites. Those services and sites are governed by their
+              own terms and privacy policies. How ads, analytics, and cookies
+              work on this site is explained in our{" "}
+              <Link href="/privacy-policy" className={linkClassName}>
+                privacy policy
+              </Link>
+              .
+            </p>
+          </section>
+
+          <section>
+            <h2
+              className="mb-3 text-xl font-semibold tracking-[-0.02em] text-foreground"
+              style={{ fontFamily: INTER }}
+            >
+              6. Your Content
+            </h2>
+            <p className="leading-relaxed text-muted-foreground">
+              You are responsible for the images, text, and URLs you use with
+              the Service, and for having the right to use them. Do not use the
+              Service to capture or edit content you are not allowed to
+              reproduce, or to misrepresent a product, person, or post.
+            </p>
+          </section>
+
+          <section>
+            <h2
+              className="mb-3 text-xl font-semibold tracking-[-0.02em] text-foreground"
+              style={{ fontFamily: INTER }}
+            >
+              7. Disclaimer of Warranties
             </h2>
             <p className="leading-relaxed text-muted-foreground">
               The Service is provided &quot;as is&quot; and &quot;as
@@ -143,7 +185,7 @@ export default function TermsPage() {
               className="mb-3 text-xl font-semibold tracking-[-0.02em] text-foreground"
               style={{ fontFamily: INTER }}
             >
-              6. Limitation of Liability
+              8. Limitation of Liability
             </h2>
             <p className="leading-relaxed text-muted-foreground">
               In no event shall Screenshot Studio or its creator be liable for
@@ -157,7 +199,7 @@ export default function TermsPage() {
               className="mb-3 text-xl font-semibold tracking-[-0.02em] text-foreground"
               style={{ fontFamily: INTER }}
             >
-              7. Changes to Terms
+              9. Changes to Terms
             </h2>
             <p className="leading-relaxed text-muted-foreground">
               We reserve the right to modify these terms at any time. Changes
@@ -171,7 +213,7 @@ export default function TermsPage() {
               className="mb-3 text-xl font-semibold tracking-[-0.02em] text-foreground"
               style={{ fontFamily: INTER }}
             >
-              8. Contact
+              10. Contact
             </h2>
             <p className="leading-relaxed text-muted-foreground">
               For questions about these terms, please visit our{" "}

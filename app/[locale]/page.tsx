@@ -5,7 +5,17 @@ import { Navigation } from "@/components/landing/Navigation";
 import { Footer } from "@/components/landing/Footer";
 import { CODE_THEME_SOURCES } from "@/components/code-image/code-themes-data";
 import { gradientColors } from "@/lib/constants/gradient-colors";
+import { SectionTitle } from "@/components/tools/ToolLayout";
+import { CARD_CLASS } from "@/components/tools/ui";
+import { CHANGELOG } from "@/lib/seo/changelog";
+import { HOW_TO_UPDATED, formatGuideDate, guideShortTitle, guides } from "@/lib/seo/guides";
 import { OG_DEFAULTS } from "@/lib/seo/metadata";
+import {
+  IMAGE_FORMATS_SENTENCE,
+  PRODUCT_FACTS,
+  VIDEO_FORMATS_SENTENCE,
+  atLeast,
+} from "@/lib/seo/product-facts";
 import { TOOLS_HUB_PATH } from "@/lib/seo/tools";
 import { cn } from "@/lib/utils";
 
@@ -289,6 +299,26 @@ const CHOICES = [
   },
 ];
 
+const IMAGE_HANDLING = [
+  {
+    title: "Edited on your device",
+    body: "Images you import are read by your browser and drawn on a canvas in the tab. They are not uploaded to be edited, and drafts are saved in your own browser storage.",
+  },
+  {
+    title: "Image tools without uploads",
+    body: "Compress, convert, resize, crop, and rotate run inside the page with the browser's own image APIs, so files go from your disk to your downloads folder without touching a server.",
+  },
+  {
+    title: "Metadata stripped on export",
+    body: "Every image is re-encoded from pixels, which drops EXIF data such as the camera model and GPS location before you share it.",
+  },
+];
+
+const FEATURED_GUIDES = guides.slice(0, 6);
+const RECENT_RELEASES = CHANGELOG.slice(0, 3);
+
+const inlineLinkClassName = "text-foreground underline underline-offset-4";
+
 export default function StartPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -354,6 +384,129 @@ export default function StartPage() {
               See how it works
             </Link>
           </p>
+
+          <div className="mx-auto mt-24 flex max-w-3xl flex-col gap-20">
+            <section>
+              <SectionTitle>A free screenshot editor that runs in your browser</SectionTitle>
+              <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+                Screenshot Studio turns plain screenshots into images that are
+                ready for a landing page, a README, a slide, or a social post.
+                Drop in a screenshot, put it on one of{" "}
+                {atLeast(PRODUCT_FACTS.backgrounds)} backgrounds, wrap it in a
+                Safari or Chrome frame or an iPhone or MacBook mockup, tilt it
+                in 3D, and export {IMAGE_FORMATS_SENTENCE} at up to{" "}
+                {PRODUCT_FACTS.maxExportScale}x resolution. The same editor
+                animates the result and exports {VIDEO_FORMATS_SENTENCE}.
+              </p>
+              <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+                Alongside the main editor there are focused editors for{" "}
+                <Link href="/code" className={inlineLinkClassName}>
+                  code snippets
+                </Link>{" "}
+                ({PRODUCT_FACTS.codeThemes} themes and{" "}
+                {PRODUCT_FACTS.codeLanguages} languages),{" "}
+                <Link href="/tweet" className={inlineLinkClassName}>
+                  posts from X
+                </Link>
+                , and{" "}
+                <Link href="/store-screenshots" className={inlineLinkClassName}>
+                  App Store screenshots
+                </Link>
+                , plus quick{" "}
+                <Link href={TOOLS_HUB_PATH} className={inlineLinkClassName}>
+                  image tools
+                </Link>{" "}
+                for compressing, converting, resizing, cropping, rotating, and{" "}
+                <Link href="/remove-background" className={inlineLinkClassName}>
+                  removing backgrounds
+                </Link>
+                . There is no signup, no watermark, and no paid tier, and the
+                whole project is open source under the {PRODUCT_FACTS.license}{" "}
+                licence.
+              </p>
+            </section>
+
+            <section>
+              <SectionTitle>What happens to your images</SectionTitle>
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                {IMAGE_HANDLING.map((item) => (
+                  <div key={item.title} className={cn(CARD_CLASS, "p-5")}>
+                    <h3 className="text-[15px] font-semibold text-foreground">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {item.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                A few features do need the network, such as capturing a
+                screenshot from a URL. The{" "}
+                <Link href="/privacy-policy" className={inlineLinkClassName}>
+                  privacy policy
+                </Link>{" "}
+                lists every request that leaves your device.
+              </p>
+            </section>
+
+            <section>
+              <div className="flex items-baseline justify-between gap-4">
+                <SectionTitle>Guides</SectionTitle>
+                <Link href="/guides" className="text-sm font-medium text-foreground underline underline-offset-4">
+                  All guides
+                </Link>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Step-by-step guides, written by doing each task in the editor.
+                Last checked {formatGuideDate(HOW_TO_UPDATED)}.
+              </p>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                {FEATURED_GUIDES.map((guide) => (
+                  <li key={guide.slug}>
+                    <Link
+                      href={`/guides/${guide.slug}`}
+                      className={cn(
+                        CARD_CLASS,
+                        "flex h-full flex-col p-5 transition-shadow duration-200 hover:ring-foreground/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/70",
+                      )}
+                    >
+                      <span className="text-[15px] font-semibold text-foreground">
+                        {guideShortTitle(guide)}
+                      </span>
+                      <span className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                        {guide.metaDescription}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section>
+              <div className="flex items-baseline justify-between gap-4">
+                <SectionTitle>Recently shipped</SectionTitle>
+                <Link href="/changelog" className="text-sm font-medium text-foreground underline underline-offset-4">
+                  Full changelog
+                </Link>
+              </div>
+              <ol className="mt-5 flex flex-col gap-3">
+                {RECENT_RELEASES.map((release) => (
+                  <li key={release.version} className={cn(CARD_CLASS, "p-5")}>
+                    <p className="text-xs text-muted-foreground">
+                      v{release.version} · {release.date}
+                    </p>
+                    <h3 className="mt-1 text-[15px] font-semibold text-foreground">
+                      {release.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {release.description}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          </div>
         </div>
       </main>
 
