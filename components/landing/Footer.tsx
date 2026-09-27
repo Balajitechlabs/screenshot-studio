@@ -111,18 +111,33 @@ export function Footer({ brandName = "Screenshot Studio" }: FooterProps) {
               <br />
               you can ship.
             </p>
-            <a
-              href={PEERLIST_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-auto inline-flex w-fit opacity-90 transition-opacity duration-150 hover:opacity-100"
-            >
-              <img
-                src={PEERLIST_BADGE}
-                alt="Peerlist Project Spotlight. Rank 1"
-                className="h-10 w-auto"
-              />
-            </a>
+            <div className="mt-auto flex flex-wrap items-center gap-3">
+              <a
+                href={PEERLIST_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-fit opacity-90 transition-opacity duration-150 hover:opacity-100"
+              >
+                <img
+                  src={PEERLIST_BADGE}
+                  alt="Peerlist Project Spotlight. Rank 1"
+                  className="h-10 w-auto"
+                />
+              </a>
+              <a
+                href="https://usefulshelf.co/?utm_source=maker-website&utm_medium=referral&utm_campaign=badge&utm_content=dark"
+                target="_blank"
+                rel="noopener"
+              >
+                <img
+                  src="https://usefulshelf.co/badge/usefulshelf.svg?theme=dark"
+                  alt="Featured on UsefulShelf"
+                  width={210}
+                  height={56}
+                  className="h-10 w-auto"
+                />
+              </a>
+            </div>
           </div>
 
           <div className="grid h-full w-full grid-cols-2 gap-2 sm:grid-cols-3 md:max-w-xl md:justify-self-end">
