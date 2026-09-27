@@ -35,6 +35,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/lib/query-client";
 import { GlobalDropZone } from "@/components/GlobalDropZone";
 import { PathTracker } from "@/components/landing/GoBackButton";
+import { AdFreeRouteLinks } from "@/components/AdFreeRouteLinks";
 import { getRootJsonLd } from "@/lib/seo/json-ld";
 import { ADSENSE_CLIENT } from "@/components/AdSenseScript";
 import { PRODUCT_FACTS, atLeast } from "@/lib/seo/product-facts";
@@ -469,6 +470,7 @@ gtag('config', 'G-WWTQR26VH4');`}
         <QueryProvider>
           <GlobalDropZone>
             <PathTracker />
+            <AdFreeRouteLinks />
             {children}
           </GlobalDropZone>
           <Toaster />
