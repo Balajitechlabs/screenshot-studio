@@ -125,12 +125,12 @@ export function Footer({ brandName = "Screenshot Studio" }: FooterProps) {
                 />
               </a>
               <a
-                href="https://usefulshelf.co/?utm_source=maker-website&utm_medium=referral&utm_campaign=badge&utm_content=dark"
+                href="https://usefulshelf.co/apps/screenshot-studio?utm_source=screenshot-studio&utm_medium=referral&utm_campaign=badge&utm_content=dark"
                 target="_blank"
                 rel="noopener"
               >
                 <img
-                  src="https://usefulshelf.co/badge/usefulshelf.svg?theme=dark"
+                  src="https://usefulshelf.co/badge/screenshot-studio.svg?theme=dark"
                   alt="Featured on UsefulShelf"
                   width={210}
                   height={56}
