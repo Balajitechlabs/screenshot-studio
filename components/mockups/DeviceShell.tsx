@@ -256,7 +256,6 @@ export function DeviceShell({
       height: screenHeight,
     };
     const bounds = asset.maskScreen ?? contentBounds;
-    const maskBounds = asset.maskScreen ?? asset.screen;
     const imageStyle: CSSProperties | undefined = asset.maskScreen ? {
       position: "absolute",
       left: `${((contentBounds.x - bounds.x) / bounds.width) * 100}%`,
@@ -264,10 +263,6 @@ export function DeviceShell({
       width: `${(contentBounds.width / bounds.width) * 100}%`,
       height: `${(contentBounds.height / bounds.height) * 100}%`,
     } : undefined;
-    // Keep the phone mask aligned with the frame, even when the image bleeds past it.
-    const maskSize = definition.family === "phone" && definition.perspective === "front"
-      ? `${(maskBounds.width / bounds.width) * 100}% ${(maskBounds.height / bounds.height) * 100}%`
-      : "100% 100%";
     const screenMask = {
       WebkitMaskImage: `url(${asset.maskSrc})`,
       maskImage: `url(${asset.maskSrc})`,
@@ -275,8 +270,8 @@ export function DeviceShell({
       maskPosition: "center",
       WebkitMaskRepeat: "no-repeat",
       maskRepeat: "no-repeat",
-      WebkitMaskSize: maskSize,
-      maskSize,
+      WebkitMaskSize: "100% 100%",
+      maskSize: "100% 100%",
     };
     return (
       <div className="relative h-full w-full">
