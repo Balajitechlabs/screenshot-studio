@@ -8,6 +8,8 @@ export interface DeviceFrameAsset {
   src: string;
   maskSrc: string;
   screen: { x: number; y: number; width: number; height: number };
+  // Optional mask coverage; the image continues to use the original screen viewport.
+  maskScreen?: DeviceFrameAsset["screen"];
   emptyStatePosition?: { x: number; y: number };
   emptyStateWidth?: number;
   emptyStateTransform?: string;
